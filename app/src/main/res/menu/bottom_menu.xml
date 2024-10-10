@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/nav_kegiatan_aktif"
+        android:title="Upcoming"
+        android:icon="@drawable/aktif" />
+    <item
+        android:id="@+id/nav_kegiatan_selesai"
+        android:title="Finished"
+        android:icon="@drawable/tidak_aktif" />
+</menu>
