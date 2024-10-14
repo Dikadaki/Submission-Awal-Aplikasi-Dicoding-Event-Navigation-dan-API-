@@ -1,22 +1,36 @@
 package apk.viewmodel
 
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewModelScope
 import apk.data.repository.EventRepository
 import apk.data.response.ListEventsItem
-
+import kotlinx.coroutines.launch
 
 class EventViewModel(private val repository: EventRepository) : ViewModel() {
 
-    // Mengambil daftar acara aktif dari repository
-    fun getActiveEvents(): LiveData<List<ListEventsItem>> {
-        return repository.getEvents() // Memanggil fungsi dari repository
+    private val _activeEvent = MutableLiveData<List<ListEventsItem>>()
+    val activeEvent: LiveData<List<ListEventsItem>> get() = _activeEvent
+
+    private val _completedEvents = MutableLiveData<List<ListEventsItem>>()
+    val completedEvents: LiveData<List<ListEventsItem>> get() = _completedEvents
+
+    // Fungsi untuk mengambil acara aktif
+    fun fetchActiveEvents() {
+        viewModelScope.launch {
+            // Mengambil data acara aktif dari repository
+            _activeEvent.value = repository.getActiveEvents() // Pastikan Anda memiliki metode ini di repository
+        }
     }
 
-    // Jika Anda ingin menambahkan fungsi untuk acara selesai
-    fun getCompletedEvents(): LiveData<List<ListEventsItem>> {
-        return repository.getCompletedEvents() // Memanggil fungsi dari repository
+    // Fungsi untuk mengambil acara selesai
+    fun fetchCompletedEvents() {
+        viewModelScope.launch {
+            // Mengambil data acara selesai dari repository
+            _completedEvents.value = repository.getCompletedEvents() // Pastikan Anda memiliki metode ini di repository
+        }
     }
 }
 
@@ -24,6 +38,7 @@ class EventViewModel(private val repository: EventRepository) : ViewModel() {
 class EventViewModelFactory(private val repository: EventRepository) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(EventViewModel::class.java)) {
+            @Suppress("UNCHECKED_CAST")
             return EventViewModel(repository) as T
         }
         throw IllegalArgumentException("Unknown ViewModel class")

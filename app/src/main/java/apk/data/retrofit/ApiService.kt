@@ -1,26 +1,26 @@
 package apk.data.retrofit
 
-import retrofit2.http.GET
-import retrofit2.Call
+import apk.data.response.DetailEventResponse
 import apk.data.response.EventResponse
-import retrofit2.http.Query
+import retrofit2.Response
+import retrofit2.http.GET
 import retrofit2.http.Path
+import retrofit2.http.Query
 
 interface ApiService {
     @GET("events")
-    fun getActiveEvents(
+    suspend fun getActiveEvents(
         @Query("active") active: Int = 1
-    ): Call<EventResponse>
+    ): EventResponse
 
     @GET("events")
-    fun getCompletedEvents(
+    suspend fun getCompletedEvents(
         @Query("active") active: Int = 0
-    ): Call<EventResponse>
+    ): EventResponse
 
-    @GET("events/{id}")
-    fun getEventDetail(
-        @Path("id") id: String
-    ): Call<EventResponse>
-
+    @GET("event/{id}")
+    suspend fun getEventDetail(
+        @Path("id") id: Int
+    ): Response<DetailEventResponse>
 
 }

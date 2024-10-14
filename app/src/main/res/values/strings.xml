@@ -1,9 +1,13 @@
 <resources>
     <string name="app_name">Dicoding Event</string>
+    <string name="media_cover_description">blala</string>
+    <string name="btn_open_link">Buka Link</string>
+    <string name="quota_text">%1$d kuota tersedia, %2$d tersisa</string>
+    <string name="active_event_title">Kegiatan Aktif</string>
+    <string name="past_event_title">Kegiatan Selesai</string>
     <string name="title">Judul Event</string>
     <string name="description">Description</string>
     <string name="review">Review</string>
     <string name="write_your_review_here">Write your review here..</string>
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

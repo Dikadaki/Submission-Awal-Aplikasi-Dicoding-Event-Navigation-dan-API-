@@ -4,8 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
+    <uses-permission android:name="android.permission.READ_MEDIA_VIDEO" />
+    <uses-permission android:name="android.permission.READ_MEDIA_AUDIO" />
 
     <application
         android:allowBackup="true"
@@ -17,6 +18,10 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.WisataReview"
         tools:targetApi="31">
+
+        <activity android:name="apk.ui.EventDetailActivity"
+            android:exported="true">
+        </activity>
 
         <activity
             android:name="com.DhikaWisata.wisatareview.MainActivity"
