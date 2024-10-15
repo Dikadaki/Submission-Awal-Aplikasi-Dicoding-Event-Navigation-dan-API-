@@ -21,7 +21,7 @@ class EventViewModel(private val repository: EventRepository) : ViewModel() {
     fun fetchActiveEvents() {
         viewModelScope.launch {
             // Mengambil data acara aktif dari repository
-            _activeEvent.value = repository.getActiveEvents() // Pastikan Anda memiliki metode ini di repository
+            _activeEvent.value = repository.getActiveEvents()
         }
     }
 
@@ -29,7 +29,7 @@ class EventViewModel(private val repository: EventRepository) : ViewModel() {
     fun fetchCompletedEvents() {
         viewModelScope.launch {
             // Mengambil data acara selesai dari repository
-            _completedEvents.value = repository.getCompletedEvents() // Pastikan Anda memiliki metode ini di repository
+            _completedEvents.value = repository.getCompletedEvents()
         }
     }
 }

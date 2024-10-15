@@ -66,8 +66,8 @@ class EventDetailFragment : Fragment() {
         viewModel.detailEvent.observe(viewLifecycleOwner) { detailEvent ->
             Log.d("EventDetailFragment", "Detail Event: $detailEvent")
             detailEvent?.let { response ->
-                if (response.error) {
-                    Log.e("EventDetailActivity", response.message)
+                if (response.error == true) {
+                    response.message?.let { Log.e("EventDetailActivity", it) }
                     // Tampilkan pesan error ke pengguna jika perlu
                     return@let
                 }
@@ -89,36 +89,60 @@ class EventDetailFragment : Fragment() {
                 val tvCategory = view.findViewById<TextView>(R.id.tvCategory)
 
                 // Set data yang diterima dari ViewModel ke UI
-                tvEventName.text = event.name
-                tvOwnerName.text = event.ownerName
-                tvBeginTime.text = event.beginTime
-                tvSummary.text = event.summary
-                tvCityName.text = event.cityName
-                tvEndTime.text = event.endTime
-                tvCategory.text = event.category
+                if (event != null) {
+                    tvEventName.text = event.name
+                }
+                if (event != null) {
+                    tvOwnerName.text = event.ownerName
+                }
+                if (event != null) {
+                    tvBeginTime.text = event.beginTime
+                }
+                if (event != null) {
+                    tvSummary.text = event.summary
+                }
+                if (event != null) {
+                    tvCityName.text = event.cityName
+                }
+                if (event != null) {
+                    tvEndTime.text = event.endTime
+                }
+                if (event != null) {
+                    tvCategory.text = event.category
+                }
 
                 // Menampilkan informasi kuota dan registrants
-                val quota = event.quota
-                val registrants = event.registrants
+                // Mengakses informasi kuota dan registrants
+                val quota = event?.quota ?: 0 // Jika quota null, set ke 0
+                val registrants = event?.registrants ?: 0 // Jika registrants null, set ke 0
+
+// Menampilkan informasi kuota
                 val quotaText = getString(R.string.quota_text, quota, quota - registrants)
-                tvQuota.text = quotaText
+                tvQuota.text = quotaText // Set text kuota ke TextView
+
 
                 // Menampilkan deskripsi acara dengan HTML
-                tvDescription.text = HtmlCompat.fromHtml(
-                    event.description ,
-                    HtmlCompat.FROM_HTML_MODE_LEGACY
-                )
+                if (event != null) {
+                    tvDescription.text = event.description?.let {
+                        HtmlCompat.fromHtml(
+                            it,
+                            HtmlCompat.FROM_HTML_MODE_LEGACY
+                        )
+                    }
+                }
 
                 // Menampilkan gambar media cover menggunakan Glide
-                Glide.with(this)
-                    .load(event.mediaCover) // Menggunakan mediaCover dari response
-                    .placeholder(R.drawable.placeholder)
-                    .error(R.drawable.error)
-                    .into(mediaCover)
+                if (event != null) {
+                    Glide.with(this)
+                        .load(event.mediaCover) // Menggunakan mediaCover dari response
+                        .placeholder(R.drawable.placeholder)
+                        .error(R.drawable.error)
+                        .into(mediaCover)
+                }
 
                 // Tombol untuk membuka link event
                 btnOpenLink.setOnClickListener {
-                    val link = event.link // Menggunakan it.link
+                    val link = event?.link // Menggunakan it.link
                     val intent = Intent(Intent.ACTION_VIEW, Uri.parse(link))
                     startActivity(intent)
                 }
