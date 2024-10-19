@@ -12,10 +12,13 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+
+
         val bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottom_navigation)
 
         // Default fragment ketika aplikasi dibuka
         loadFragment(KegiatanAktifFragment())
+
 
         bottomNavigationView.setOnItemSelectedListener { item ->
             when (item.itemId) {
@@ -32,6 +35,7 @@ class MainActivity : AppCompatActivity() {
         }
 
     }
+
 
     private fun loadFragment(fragment: Fragment) {
         supportFragmentManager.beginTransaction()

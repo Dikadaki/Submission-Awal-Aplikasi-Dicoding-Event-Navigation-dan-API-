@@ -11,6 +11,9 @@ import kotlinx.coroutines.launch
 
 class EventViewModel(private val repository: EventRepository) : ViewModel() {
 
+    private val  _isloading = MutableLiveData<Boolean>()
+    val isloading: LiveData<Boolean> get() = _isloading
+
     private val _activeEvent = MutableLiveData<List<ListEventsItem>>()
     val activeEvent: LiveData<List<ListEventsItem>> get() = _activeEvent
 
@@ -20,16 +23,30 @@ class EventViewModel(private val repository: EventRepository) : ViewModel() {
     // Fungsi untuk mengambil acara aktif
     fun fetchActiveEvents() {
         viewModelScope.launch {
-            // Mengambil data acara aktif dari repository
-            _activeEvent.value = repository.getActiveEvents()
+            _isloading.value = true  // Set isLoading menjadi true saat mulai mengambil data
+            try {
+                // Mengambil data acara aktif dari repository
+                _activeEvent.value = repository.getActiveEvents()
+            } catch (e: Exception) {
+                // Tangani error jika ada
+            } finally {
+                _isloading.value = false  // Set isLoading menjadi false setelah data diambil
+            }
         }
     }
 
     // Fungsi untuk mengambil acara selesai
     fun fetchCompletedEvents() {
         viewModelScope.launch {
-            // Mengambil data acara selesai dari repository
-            _completedEvents.value = repository.getCompletedEvents()
+            _isloading.value = true  // Set isLoading menjadi true saat mulai mengambil data
+            try {
+                // Mengambil data acara selesai dari repository
+                _completedEvents.value = repository.getCompletedEvents()
+            } catch (e: Exception) {
+                // Tangani error jika ada
+            } finally {
+                _isloading.value = false  // Set isLoading menjadi false setelah data diambil
+            }
         }
     }
 }

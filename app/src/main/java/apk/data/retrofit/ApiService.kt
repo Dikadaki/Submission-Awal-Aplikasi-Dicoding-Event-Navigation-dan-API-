@@ -19,7 +19,7 @@ interface ApiService { // Mendeklarasikan interface ApiService untuk mendefinisi
         @Query("active") active: Int = 0 // Menambahkan parameter query "active" dengan nilai default 0 (untuk event tidak aktif).
     ): EventResponse // Mengembalikan objek EventResponse yang berisi daftar event.
 
-    @GET("event/{id}") // Menandai metode berikut sebagai permintaan GET untuk endpoint "event/{id}".
+    @GET("events/{id}") // Menandai metode berikut sebagai permintaan GET untuk endpoint "event/{id}".
     suspend fun getEventDetail( // Mendeklarasikan metode suspend getEventDetail untuk mendapatkan detail dari event berdasarkan ID.
         @Path("id") id: Int // Mengambil ID dari parameter fungsi dan menempatkannya di URL.
     ): Response<DetailEventResponse> // Mengembalikan objek Response yang berisi DetailEventResponse untuk respons detail event.

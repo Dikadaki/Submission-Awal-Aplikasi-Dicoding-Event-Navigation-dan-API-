@@ -1,9 +1,11 @@
 package apk.data.ui.fragment
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -27,6 +29,7 @@ class KegiatanSelesaiFragments : Fragment() {
     private lateinit var eventAdapter: EventAdapter
     private lateinit var recyclerView: RecyclerView
     private lateinit var viewModel: EventViewModel
+    private lateinit var progressBar: ProgressBar
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -34,11 +37,15 @@ class KegiatanSelesaiFragments : Fragment() {
     ): View? {
         val view = inflater.inflate(R.layout.fragment_kegiatan_selesai, container, false)
 
+        Log.d("KegiatanSelesaiFragments", "onCreateView: Inisialisasi fragment selesai")
+
         // Setup RecyclerView
         recyclerView = view.findViewById(R.id.recycler_view_selesai)
         recyclerView.layoutManager = LinearLayoutManager(context)
         eventAdapter = EventAdapter(requireContext(), listOf())
         recyclerView.adapter = eventAdapter
+
+        Log.d("KegiatanSelesaiFragments", "RecyclerView dan EventAdapter berhasil diinisialisasi")
 
         // Setup ViewModel
         val apiService = Retrofit.Builder()
@@ -51,6 +58,8 @@ class KegiatanSelesaiFragments : Fragment() {
         val factory = EventViewModelFactory(repository)
         viewModel = ViewModelProvider(this, factory).get(EventViewModel::class.java)
 
+        Log.d("KegiatanSelesaiFragments", "ViewModel berhasil diinisialisasi")
+
         // Observe LiveData dari ViewModel untuk acara selesai
         observeCompletedEvents()
 
@@ -58,8 +67,12 @@ class KegiatanSelesaiFragments : Fragment() {
         val headerTitle = activity?.findViewById<TextView>(R.id.headerTitle)
         headerTitle?.text = getString(R.string.past_event_title)
 
+        Log.d("KegiatanSelesaiFragments", "Header title diatur ke: ${getString(R.string.past_event_title)}")
+
         // Set item click listener
         eventAdapter.setOnItemClickListener { event ->
+            Log.d("KegiatanSelesaiFragments", "Item di klik: ${event.name}, ID: ${event.id}")
+
             // Panggil EventDetailFragment dengan mengirimkan EVENT_ID
             val bundle = Bundle().apply {
                 putString("EVENT_ID", event.id.toString())
@@ -70,9 +83,11 @@ class KegiatanSelesaiFragments : Fragment() {
 
             // Ganti fragment yang ada di dalam container dengan EventDetailFragment
             parentFragmentManager.beginTransaction()
-                .replace(R.id.fragment_container, eventDetailFragment) // Ganti fragment di container
-                .addToBackStack(null) // Tambah ke back stack agar bisa kembali
+                .replace(R.id.fragment_container, eventDetailFragment)
+                .addToBackStack(null)
                 .commit()
+
+            Log.d("KegiatanSelesaiFragments", "EventDetailFragment berhasil diinstal dengan ID: ${event.id}")
         }
 
         // Fetch completed events
@@ -83,19 +98,39 @@ class KegiatanSelesaiFragments : Fragment() {
 
     private fun observeCompletedEvents() {
         viewModel.completedEvents.observe(viewLifecycleOwner) { events ->
+            Log.d("KegiatanSelesaiFragments", "Jumlah acara selesai yang diterima: ${events.size}")
+
             eventAdapter.updateData(events) // Update data adapter ketika ada perubahan data
         }
     }
 
-
     private fun fetchCompletedEvents() {
+        Log.d("KegiatanSelesaiFragments", "Fetching acara selesai dimulai")
         CoroutineScope(Dispatchers.IO).launch {
             try {
-                viewModel.fetchCompletedEvents() // Panggil fungsi fetchCompletedEvents di ViewModel
+                viewModel.fetchCompletedEvents()
+                Log.d("KegiatanSelesaiFragments", "Fetching acara selesai berhasil")
             } catch (e: Exception) {
                 // Tangani kesalahan di sini (misalnya log atau tampilkan pesan kesalahan)
+                Log.e("KegiatanSelesaiFragments", "Error saat fetching acara selesai: ${e.message}")
                 e.printStackTrace()
             }
         }
+    }
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        viewModel = ViewModelProvider(this).get(EventViewModel::class.java)
+        progressBar = view.findViewById(R.id.progressBar)
+
+        viewModel.isloading.observe(viewLifecycleOwner) {isloading ->
+            Log.d("KegiatanSelesaiFragment", "isLoading: $isloading")
+            if (isloading){
+                progressBar.visibility = View.VISIBLE
+            }else {
+                progressBar.visibility = View.GONE
+            }
+        }
+        viewModel.fetchActiveEvents()
     }
 }
